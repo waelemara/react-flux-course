@@ -2,7 +2,7 @@
 
 var gulp = require('gulp');
 var connect = require('gulp-connect');
-var open = require('gulp-open');
+var open = require('open');
 var browserify = require('browserify');
 var reactify = require('reactify');
 var source = require('vinyl-source-stream');
@@ -15,7 +15,7 @@ var config = {
     baseUrl : "http://localhost",
     paths: {
         html: './src/*.html',
-        js: './src/*.js',
+        js: './src/**/*.js',
         css: [
             'node_modules/bootstrap/dist/css/bootstrap.min.css',
             'node_modules/bootstrap/dist/css/bootstrap-theme.min.css'
@@ -37,7 +37,7 @@ gulp.task('connect', function () {
 
 gulp.task('open', ['connect'], function () {
     gulp.src('dist/index.html')
-        .pipe(open({ url: config.baseUrl + ':' + config.port + '/' }));
+        .pipe(open( config.baseUrl + ':' + config.port + '/'));
 });
 
 gulp.task('html', function () {
@@ -64,7 +64,8 @@ gulp.task('css', function () {
 
 gulp.task('watch',function () {
     gulp.watch(config.paths.html, ['html']);
-    gulp.watch(config.paths.html, ['js']);
+    gulp.watch(config.paths.js, ['js']);
+    gulp.watch(config.paths.css, ['css']);
 });
 
 gulp.task('default', ['html', 'css' , 'js' ,'open', 'watch']);
