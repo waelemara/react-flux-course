@@ -12,6 +12,7 @@
     "gulp-eslint": "^2.0.0",
     "gulp-open": "^2.0.0",
     "jquery": "^2.2.4",
+    "lodash": "^4.13.1",
     "open": "0.0.5",
     "reactify": "^1.1.1",
     "vinyl-source-stream": "^1.1.0"

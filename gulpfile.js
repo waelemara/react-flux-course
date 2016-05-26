@@ -12,7 +12,7 @@ var lint = require('gulp-eslint');
 
 var config = {
     port: 3000,
-    baseUrl : "http://localhost",
+    baseUrl: "http://localhost",
     paths: {
         html: './src/*.html',
         js: './src/**/*.js',
@@ -20,6 +20,7 @@ var config = {
             'node_modules/bootstrap/dist/css/bootstrap.min.css',
             'node_modules/bootstrap/dist/css/bootstrap-theme.min.css'
         ],
+        images: './src/images/*',
         mainJs: './src/main.js',
         dist: './dist'
     }
@@ -37,7 +38,7 @@ gulp.task('connect', function () {
 
 gulp.task('open', ['connect'], function () {
     gulp.src('dist/index.html')
-        .pipe(open( config.baseUrl + ':' + config.port + '/'));
+        .pipe(open(config.baseUrl + ':' + config.port + '/'));
 });
 
 gulp.task('html', function () {
@@ -59,13 +60,21 @@ gulp.task('js', function () {
 gulp.task('css', function () {
     gulp.src(config.paths.css)
         .pipe(concat('bundle.css'))
-        .pipe(gulp.dest(config.paths.dist + "/css"));
+        .pipe(gulp.dest(config.paths.dist + "/css"))
+        .pipe(connect.reload());
 });
 
-gulp.task('watch',function () {
+gulp.task('images', function () {
+    gulp.src(config.paths.images)
+        .pipe(gulp.dest(config.paths.dist + "/images"))
+        .pipe(connect.reload());
+});
+
+
+gulp.task('watch', function () {
     gulp.watch(config.paths.html, ['html']);
     gulp.watch(config.paths.js, ['js']);
     gulp.watch(config.paths.css, ['css']);
 });
 
-gulp.task('default', ['html', 'css' , 'js' ,'open', 'watch']);
+gulp.task('default', ['html', 'css', 'js', 'images', 'open', 'watch']);
