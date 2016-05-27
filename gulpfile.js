@@ -8,7 +8,8 @@ var reactify = require('reactify');
 var source = require('vinyl-source-stream');
 var concat = require('gulp-concat');
 var lint = require('gulp-eslint');
-
+var less = require('gulp-less');
+var eventStream = require('event-stream');
 
 var config = {
     port: 3000,
@@ -19,6 +20,9 @@ var config = {
         css: [
             'node_modules/bootstrap/dist/css/bootstrap.min.css',
             'node_modules/bootstrap/dist/css/bootstrap-theme.min.css'
+        ],
+        less: [
+            'node_modules/toastr/toastr.less'
         ],
         images: './src/images/*',
         mainJs: './src/main.js',
@@ -57,11 +61,27 @@ gulp.task('js', function () {
         .pipe(connect.reload());
 });
 
+gulp.task('less', function () {
+    gulp.src(config.paths.less)
+        .pipe(less())
+        .pipe(concat('toastr.css'))
+});
+
 gulp.task('css', function () {
-    gulp.src(config.paths.css)
+    var siteCss = gulp.src(config.paths.css);
+    var vendorCss = gulp.src(config.paths.less)
+        .pipe(less());
+        
+    eventStream.merge(siteCss, vendorCss)
         .pipe(concat('bundle.css'))
         .pipe(gulp.dest(config.paths.dist + "/css"))
         .pipe(connect.reload());
+
+    /*gulp.src([siteCss, vendorCss])
+        .pipe(concat('bundle.css'))
+        .pipe(gulp.dest(config.paths.dist + "/css"))
+        .pipe(connect.reload());
+        */
 });
 
 gulp.task('images', function () {
